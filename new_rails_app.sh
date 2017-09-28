@@ -13,7 +13,5 @@ if [ "$COLORIZE" == "false" ]; then
 fi
 
 read -p "What's the name of the new app? " APPNAME
-NEW_COMMAND="rails new $APPNAME -T -d postgresql -m template.rb"
-echo "Executing $NEW_COMMAND"
-
-rails new $APPNAME -T -d postgresql -m template.rb
+echo "Executing rails new $APPNAME -T -d postgresql -m https://raw.githubusercontent.com/raul-gracia/rails_application_template/master/template.rb"
+rails new $APPNAME -T -d postgresql -m https://raw.githubusercontent.com/raul-gracia/rails_application_template/master/template.rb
