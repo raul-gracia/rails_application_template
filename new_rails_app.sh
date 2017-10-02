@@ -1,6 +1,7 @@
 #!/bin/sh
 RAILS="$(gem list -i rails -v '~>5')"
 COLORIZE="$(gem list -i colorize)"
+TEMPLATE_PATH="https://raw.githubusercontent.com/raul-gracia/rails_application_template/master/template.rb"
 
 if [ "$RAILS" == "false" ]; then
   echo "Please make sure to have rails version 5 or above"
@@ -13,5 +14,12 @@ if [ "$COLORIZE" == "false" ]; then
 fi
 
 read -p "What's the name of the new app? " APPNAME
-echo "Executing rails new $APPNAME -T -d postgresql -m https://raw.githubusercontent.com/raul-gracia/rails_application_template/master/template.rb"
-rails new $APPNAME -T -d postgresql -m https://raw.githubusercontent.com/raul-gracia/rails_application_template/master/template.rb
+read -p "Do you need react js support? (y/N) " REACTJS
+
+if [ "$REACTJS" == "Y" ] || [ "$REACTJS" == "y" ] || [ "$REACTJS" == "yes" ] || [ "$REACTJS" == "YES" ]; then
+  echo "Executing rails new $APPNAME -T -d postgresql --webpack=react -m $TEMPLATE_PATH"
+  rails new $APPNAME -T -d postgresql --webpack=react -m $TEMPLATE_PATH
+else
+  echo "Executing rails new $APPNAME -T -d postgresql -m $TEMPLATE_PATH"
+  rails new $APPNAME -T -d postgresql -m $TEMPLATE_PATH
+fi
