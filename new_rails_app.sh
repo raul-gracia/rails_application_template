@@ -14,12 +14,5 @@ if [ "$COLORIZE" == "false" ]; then
 fi
 
 read -p "What's the name of the new app? " APPNAME
-read -p "Do you need react js support? (y/N) " REACTJS
-
-if [ "$REACTJS" == "Y" ] || [ "$REACTJS" == "y" ] || [ "$REACTJS" == "yes" ] || [ "$REACTJS" == "YES" ]; then
-  echo "Executing rails new $APPNAME -T -d postgresql --webpack=react -m $TEMPLATE_PATH"
-  rails new $APPNAME -T -d postgresql --webpack=react -m $TEMPLATE_PATH
-else
-  echo "Executing rails new $APPNAME -T -d postgresql -m $TEMPLATE_PATH"
-  rails new $APPNAME -T -d postgresql -m $TEMPLATE_PATH
-fi
+echo "Executing rails new $APPNAME -B -T -d postgresql -m $TEMPLATE_PATH"
+rails new $APPNAME -T -d postgresql -B -m $TEMPLATE_PATH
