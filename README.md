@@ -2,5 +2,4 @@
 
 Just run:
 
-
-`curl -s https://raw.githubusercontent.com/raul-gracia/rails_application_template/master/new_rails_app.sh | bash`
+`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/raul-gracia/rails_application_template/master/new_rails_app.rb)"`

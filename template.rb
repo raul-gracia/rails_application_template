@@ -69,6 +69,7 @@ def configure_bootstrap
   @import "bootstrap";
   CODE
 
+  run 'rm app/assets/javascripts/application.js'
   file'app/assets/javascripts/application.js', <<~CODE
   //= require rails-ujs
   //= require turbolinks
@@ -93,7 +94,26 @@ end
 def configure_rspec(erb: true, react: false)
   say_info 'Configuring Rspec'
   generate "rspec:install"
-  unless react
+  require_config = <<~CODE
+    require 'rspec/rails'
+    require 'capybara/rspec'
+    Capybara.javascript_driver = :poltergeist
+    require 'capybara-screenshot/rspec'
+    Capybara.asset_host = 'http://localhost:3000'
+    //Capybara.save_path = '$APPLICATION_ROOT/tmp/capybara'
+    # Keep only the screenshots generated from the last failing test suite
+    Capybara::Screenshot.prune_strategy = :keep_last_run
+  CODE
+  replace_line('spec/rails_helper.rb', "require 'rspec/rails'", require_config)
+
+  if react
+    react_on_rails_config =  <<~CODE
+      RSpec.configure do |config|
+        ReactOnRails::TestHelper.configure_rspec_to_compile_assets(config)
+    CODE
+    replace_line('spec/rails_helper.rb', "RSpec.configure do |config|", react_on_rails_config)
+
+  else
     generate 'controller hello_world index', '--no-helper', '--no-view-specs', '--no-assets', '--no-controller-specs'
     if erb
       run 'rm app/views/hello_world/index.html.erb'
@@ -108,8 +128,8 @@ def configure_rspec(erb: true, react: false)
       %h3 Hello Stranger!
       CODE
     end
-    route "root to: 'hello_world#index'"
   end
+  route "root to: 'hello_world#index'"
   #<p class="notice"><%= notice %></p>
   #<p class="alert"><%= alert %></p>
 
@@ -147,7 +167,7 @@ def configure_rspec(erb: true, react: false)
   file 'spec/features/hello_world_spec.rb', <<~CODE
    require 'rails_helper'
 
-   RSpec.feature "Hello World Test", type: :feature do
+   RSpec.feature "Hello World Test", type: :feature, js: true do
      it "should render the Hello World on the home page" do
        visit root_path
        expect(page).to have_content "Hello World"
@@ -200,7 +220,7 @@ end
 #########################
 #   FACTORIES LIBRARY   #
 #########################
-library = choose_option('Choose a Factory Library', [:factory_girl_rails, :fabricator])
+library = choose_option('Choose a Factory Library', [:factory_bot_rails, :fabricator])
 gems_to_configure[:dev_test] << library
 
 ################
@@ -219,7 +239,7 @@ new_commit('Initial Commit')
 
 
 gems_to_configure[:root]     += %i[bootstrap jquery-rails devise]
-gems_to_configure[:dev]      += %i[better_errors spring-commands-rspec]
+gems_to_configure[:dev]      += %i[better_errors binding_of_caller spring-commands-rspec]
 gems_to_configure[:dev_test] += %i[pry-byebug rspec-rails shoulda-matchers faker]
 gems_to_configure[:test]     += %i[capybara capybara-screenshot poltergeist]
 
