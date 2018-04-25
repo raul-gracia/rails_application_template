@@ -268,6 +268,7 @@ if webpack_react
   new_commit('Install react on rails config')
   say_success("React and webpacker installed")
 end
+rails_command "db:migrate"
 rails_command "db:reset"
 rails_command "db:setup"
 
