@@ -238,7 +238,7 @@ end
 new_commit('Initial Commit')
 
 
-gems_to_configure[:root]     += %i[bootstrap jquery-rails devise]
+gems_to_configure[:root]     += %i[bootstrap jquery-rails devise mini_racer]
 gems_to_configure[:dev]      += %i[better_errors binding_of_caller spring-commands-rspec]
 gems_to_configure[:dev_test] += %i[pry-byebug rspec-rails shoulda-matchers faker]
 gems_to_configure[:test]     += %i[capybara capybara-screenshot poltergeist]
@@ -248,11 +248,17 @@ gems_to_configure.each do |group, gems|
   when :root
     gems.each{|gem_name| gem gem_name.to_s}
   when :dev
-    gem_group :development { gems.each{ |gem_name| gem gem_name.to_s } }
+    gem_group :development do
+      gems.each{ |gem_name| gem gem_name.to_s }
+    end
   when :test
-    gem_group :test { gems.each{ |gem_name| gem gem_name.to_s } }
+    gem_group :test do
+      gems.each{ |gem_name| gem gem_name.to_s }
+    end
   when :dev_test
-    gem_group :development, :test { gems.each{ |gem_name| gem gem_name.to_s } }
+    gem_group :development, :test do
+      gems.each{ |gem_name| gem gem_name.to_s }
+    end
   end
 end
 run "bundle install"
@@ -264,10 +270,12 @@ if webpack_react
   say_info("Installing react")
   rails_command "webpacker:install:react"
   new_commit('Configure webpack:react')
+  run "bundle install"
   generate "react_on_rails:install"
   new_commit('Install react on rails config')
   say_success("React and webpacker installed")
 end
+run "bundle install"
 rails_command "db:migrate"
 rails_command "db:reset"
 rails_command "db:setup"

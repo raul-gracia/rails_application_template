@@ -1,16 +1,16 @@
 #!/usr/bin/ruby
-rails = `gem list -i rails -v '~>5'`
-colorize = `gem list -i colorize`
-#template_path = "https://raw.githubusercontent.com/raul-gracia/rails_application_template/master/template.rb"
-template_path = " /Users/maliciousmind/Dropbox/Development/rails_application_template/template.rb"
+rails = `gem list -i rails -v '~>5'`.strip
+colorize = `gem list -i colorize`.strip
+template_path = 'https://raw.githubusercontent.com/raul-gracia/rails_application_template/master/template.rb'
+# template_path = '/Users/maliciousmind/Dropbox/Development/rails_application_template/template.rb'
 
-unless rails
-  puts "Please make sure to have rails version 5 or above"
+if rails == 'false'
+  puts 'Please make sure to have rails version 5 or above'
   exit
 end
 
-unless colorize
-  puts "Please make sure to have the colorize gem installed"
+if colorize == 'false'
+  puts 'Please make sure to have the colorize gem installed (ie. gem install colorize)'
   exit
 end
 
